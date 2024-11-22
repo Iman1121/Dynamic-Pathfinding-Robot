@@ -1,8 +1,7 @@
 import pygame
 import sys
-from layout import getNodes, obstacles
-from nodeClass import Node
-from constants import *
+from envLayout import *
+from nodeClass import Node, detection_range
 from helpers import *
 from agentClass import Agent
 
@@ -14,8 +13,19 @@ screen = pygame.display.set_mode((screen_width, screen_height))
 transparent_surface = pygame.Surface((screen_width, screen_height), pygame.SRCALPHA)
 pygame.display.set_caption("Player with Transparent Circle")
 
+
+player_size = 50
+player_x = 400
+player_y = 50
+player_speed = 8
 player = pygame.Rect(player_x, player_y, player_size, player_size)
 
+
+# A.I. settings
+walker_size = 25
+walker_x = screen_width // 2 - player_size // 2
+walker_y = screen_height - player_size - 10  # Place the player at the bottom
+walker_speed = 4
 walker_obj = pygame.Rect(walker_x, walker_y, walker_size, walker_size)
 walker = Agent(walker_x, walker_y, walker_speed, walker_size, walker_obj, walker_colour)
 
@@ -36,8 +46,9 @@ pygame.draw.circle(ai_detect, circle_color, (detection_range, detection_range), 
 goal = Node(400, 50)
 nodes = getNodes(obstacles, goal)
 
-# path = []
+path = []
 setAdjacencies(nodes, obstacles)
+
 
 # Main loop
 running = True
@@ -48,20 +59,22 @@ while running:
 
     # Movement to test environment
     keys = pygame.key.get_pressed()
+    newy = player_y
+    newx = player_x
     if keys[pygame.K_w]:  # Move up
-        player_y -= player_speed
+        newy -= player_speed
     if keys[pygame.K_s]:  # Move down
-        player_y += player_speed
+        newy += player_speed
     if keys[pygame.K_a]:  # Move left
-        player_x -= player_speed
+        newx -= player_speed
     if keys[pygame.K_d]:  # Move right
-        player_x += player_speed
+        newx += player_speed
     if keys[pygame.K_t]:
-        player_x = 400
-        player_y = 50
+        newx = 400
+        newy = 50
     if keys[pygame.K_g]:
-        player_x = 400
-        player_y = 450
+        newx = 400
+        newy = 450
 
     # Handling A* in real time
     obstructed = False
@@ -92,7 +105,11 @@ while running:
         # print("Elsing")
     
     # Update the player's rectangle position
-    player.update(player_x, player_y, player_size, player_size)
+    newPlayer = pygame.Rect(newx, newy, player_size, player_size)
+    if not check_collision(newPlayer, obstacles):
+        player_y = newy
+        player_x = newx
+        player.update(player_x, player_y, player_size, player_size)
     goal.x = player_x + player_size // 2
     goal.y = player_y + player_size // 2
 
@@ -140,9 +157,6 @@ while running:
     for node in nodes:
         pygame.draw.line(transparent_surface, (0,0,0,0), node.get_loc(), (walker.x + walker.size // 2, walker.y + walker.size // 2), 5)
         pygame.draw.circle(screen, node.color, node.get_loc(), node_radius)
-    
-
-
 
     # Test pathfinding
     setAdjacencies(nodes, obstacles)

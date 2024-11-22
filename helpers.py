@@ -1,10 +1,9 @@
 import math
 import heapq
-from constants import player_color
+from envLayout import player_color, screen_height, screen_width
 from pygame import draw
 
 def find_path(starting_nodes, goal):
-    path_cost = 0
     visited = set()
     frontier = []
     for node in starting_nodes:
@@ -82,3 +81,13 @@ def visualizePath(path, screen):
         if preNode != None:
             draw.line(screen, player_color, preNode.get_loc(), node.get_loc(), 2)
         preNode = node
+
+def check_collision(rect, obstacles):
+    for obstacle in obstacles:
+        if rect.colliderect(obstacle):
+            return True
+    
+    if rect.left < 0 or rect.right > screen_width or rect.top < 0 or rect.bottom > screen_height:
+        return True
+
+    return False

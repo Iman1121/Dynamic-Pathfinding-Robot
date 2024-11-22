@@ -1,5 +1,8 @@
-from constants import *
 from math import sqrt
+
+detection_range = 60  # Nodes within this distance will change color
+node_color = (255, 255, 0)  # Yellow nodes
+detected_color = (255, 0, 255)  # Magenta for detected nodes
 
 class Node:
     def __init__(self, x, y):

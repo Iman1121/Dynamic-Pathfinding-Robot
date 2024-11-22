@@ -1,9 +1,11 @@
 import pygame
 import sys
-from envLayout import *
+import envLayout
 from nodeClass import Node, detection_range
 from helpers import *
 from agentClass import Agent
+
+obstacles = envLayout.obstacles
 
 # Initialize pygame
 pygame.init()
@@ -27,7 +29,7 @@ walker_x = screen_width // 2 - player_size // 2
 walker_y = screen_height - player_size - 10  # Place the player at the bottom
 walker_speed = 4
 walker_obj = pygame.Rect(walker_x, walker_y, walker_size, walker_size)
-walker = Agent(walker_x, walker_y, walker_speed, walker_size, walker_obj, walker_colour)
+walker = Agent(walker_x, walker_y, walker_speed, walker_size, walker_obj, envLayout.walker_colour)
 
 # Agent settings
 agent_size = 50
@@ -39,12 +41,12 @@ agent_speed = 3  # Speed of the agent
 # Create a surface for the transparent circle
 circle_surface = pygame.Surface((detection_range * 2, detection_range * 2), pygame.SRCALPHA)
 ai_detect = pygame.Surface((detection_range * 2, detection_range * 2), pygame.SRCALPHA)
-pygame.draw.circle(circle_surface, circle_color, (detection_range, detection_range), detection_range)
-pygame.draw.circle(ai_detect, circle_color, (detection_range, detection_range), detection_range)
+pygame.draw.circle(circle_surface, envLayout.circle_color, (detection_range, detection_range), detection_range)
+pygame.draw.circle(ai_detect, envLayout.circle_color, (detection_range, detection_range), detection_range)
 
 # Define the goal node (if needed)
 goal = Node(400, 50)
-nodes = getNodes(obstacles, goal)
+nodes = envLayout.getNodes(obstacles, goal)
 
 path = []
 setAdjacencies(nodes, obstacles)
@@ -132,17 +134,17 @@ while running:
     # draw
 
     # Fill the screen with the background color
-    screen.fill(background_color)
+    screen.fill(envLayout.background_color)
 
     # Draw the large blocks
     for obstacle in obstacles:
-        pygame.draw.rect(screen, block_color, obstacle)
+        pygame.draw.rect(screen, envLayout.block_color, obstacle)
 
     # Draw the player
     pygame.draw.rect(screen, player_color, player)
 
     #Draw A.I.
-    pygame.draw.rect(screen, walker_colour, walker.get_obj())
+    pygame.draw.rect(screen, envLayout.walker_colour, walker.get_obj())
 
     # Draw the moving agent
     # pygame.draw.rect(screen, agent_color, (agent_x, agent_y, agent_size, agent_size))
@@ -156,7 +158,7 @@ while running:
     # Draw the nodes around the block
     for node in nodes:
         pygame.draw.line(transparent_surface, (0,0,0,0), node.get_loc(), (walker.x + walker.size // 2, walker.y + walker.size // 2), 5)
-        pygame.draw.circle(screen, node.color, node.get_loc(), node_radius)
+        pygame.draw.circle(screen, node.color, node.get_loc(), envLayout.node_radius)
 
     # Test pathfinding
     setAdjacencies(nodes, obstacles)

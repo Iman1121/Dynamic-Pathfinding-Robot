@@ -1,6 +1,6 @@
 from math import sqrt
 
-detection_range = 60  # Nodes within this distance will change color
+detection_range = 120  # Nodes within this distance will change color
 node_color = (255, 255, 0)  # Yellow nodes
 detected_color = (255, 0, 255)  # Magenta for detected nodes
 

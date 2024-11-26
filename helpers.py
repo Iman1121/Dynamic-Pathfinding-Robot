@@ -91,3 +91,26 @@ def check_collision(rect, obstacles):
         return True
 
     return False
+
+import math
+
+def point_on_line(agent_loc, goal_loc, distance):
+    x1, y1 = agent_loc
+    x2, y2 = goal_loc
+    
+    # Calculate the direction vector from p1 to p2
+    dx = x2 - x1
+    dy = y2 - y1
+    
+    # Compute the magnitude of the direction vector
+    magnitude = math.sqrt(dx**2 + dy**2)
+    
+    # Normalize the direction vector
+    unit_dx = dx / magnitude
+    unit_dy = dy / magnitude
+    
+    # Scale the unit vector by the desired distance and add to p1
+    new_x = x1 + distance * unit_dx
+    new_y = y1 + distance * unit_dy
+    
+    return new_x, new_y

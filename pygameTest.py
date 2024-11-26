@@ -79,32 +79,47 @@ while running:
         newy = 450
 
     # Handling A* in real time
+
+    point = point_on_line((walker.x + walker.size // 2, walker.y + walker.size // 2), goal.get_loc(), 120)
     obstructed = False
     for obstacle in obstacles:
-        if obstacle.clipline((walker.x, walker.y, goal.x, goal.y)):
+        if obstacle.clipline((walker.x + walker.size // 2, walker.y + walker.size // 2, point[0], point[1])):
             obstructed = True
-    if distance(Node(walker.x, walker.y), goal) < detection_range and not obstructed:
+    if obstructed:
+        if path == [] and walker.frontier != []:
+            path = generatePath(find_path(walker.frontier, goal), nodes)
+        elif len(path) == 1 and walker.frontier != []:
+            path = generatePath(find_path(walker.frontier, goal), nodes)
+        elif not walker.traverse(path[-1], 5):
+            path.pop()
+            print("Elsing")
+    else:
         path = []
         walker.frontier = []
         walker.traverse(goal, detection_range - 20)
-        # print("Leashing")
-    elif path == [] and walker.frontier != []:
-        path = generatePath(find_path(walker.frontier, goal), nodes)
-    elif path != []:
-            # print("Pathing: ", path[-1])
-            checkPath = generatePath(find_path(walker.frontier, goal), nodes)
-            if len(path) == 1 and obstructed:
-                    path = checkPath
-            elif totalDistance(checkPath) < totalDistance(path) and not nodeSubset(checkPath, path):
-                print("Poof")
-                print(checkPath[-1])
-                print(path[-2])
-                path = checkPath 
-            elif not walker.traverse(path[-1], 5):
-                path.pop()
-    else:
-        walker.traverse(goal, detection_range - 20)
-        # print("Elsing")
+        print("Leashing")
+    # if distance(Node(walker.x, walker.y), goal) < detection_range and not obstructed:
+    #     path = []
+    #     walker.frontier = []
+    #     walker.traverse(goal, detection_range - 20)
+    #     # print("Leashing")
+    # elif path == [] and walker.frontier != []:
+    #     path = generatePath(find_path(walker.frontier, goal), nodes)
+    # elif path != []:
+    #         # print("Pathing: ", path[-1])
+    #         checkPath = generatePath(find_path(walker.frontier, goal), nodes)
+    #         if len(path) == 1 and obstructed:
+    #                 path = checkPath
+    #         elif totalDistance(checkPath) < totalDistance(path) and not nodeSubset(checkPath, path):
+    #             # print("Poof")
+    #             # print(checkPath[-1])
+    #             # print(path[-2])
+    #             path = checkPath 
+    #         elif not walker.traverse(path[-1], 5):
+    #             path.pop()
+    # else:
+    #     walker.traverse(goal, detection_range - 20)
+    #     # print("Elsing")
     
     # Update the player's rectangle position
     newPlayer = pygame.Rect(newx, newy, player_size, player_size)
@@ -164,7 +179,10 @@ while running:
     setAdjacencies(nodes, obstacles)
     if walker.frontier != []:
         visualizePath(generatePath(find_path(walker.frontier, goal), nodes), screen)
-    
+
+    point = point_on_line((walker.x + walker.size // 2, walker.y + walker.size // 2), goal.get_loc(), 120)
+    pygame.draw.line(screen, player_color, (walker.x + walker.size // 2, walker.y + walker.size // 2), point, 2)
+
     # Update the display
     pygame.display.flip()
 

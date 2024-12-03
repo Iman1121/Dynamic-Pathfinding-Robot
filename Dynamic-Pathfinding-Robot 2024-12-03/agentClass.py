@@ -1,5 +1,6 @@
 from helpers import distance, check_collision
 from nodeClass import Node
+import pygame
 
 class Agent:
     def __init__(self, x, y, speed, size, rect, colour):
@@ -44,8 +45,9 @@ class Agent:
         return True
 
 class NPC(Agent):
-    def __init__(self, x, y, speed, size, rect, colour):
-        super().__init__(x, y, speed, size, rect, colour)
+    def __init__(self, x, y, speed, size, colour):
+        agent_obj = pygame.Rect(x, y, size, size)
+        super().__init__(x, y, speed, size, agent_obj, colour)
         self.nodes = []
 
     def updateNodes(self, difference, direction):
@@ -68,31 +70,31 @@ class NPC(Agent):
         if difference_x > 0:
             if abs(difference_x) <= self.speed:
                 self.x -= difference_x
-                updateNodes(-difference_x, 'x')
+                self.updateNodes(-difference_x, 'x')
             else:
                 self.x -= self.speed
-                updateNodes(-self.speed, 'x')
+                self.updateNodes(-self.speed, 'x')
         elif difference_x < 0:
             if abs(difference_x) <= self.speed:
                 self.x -= difference_x
-                updateNodes(-difference_x, 'x')
+                self.updateNodes(-difference_x, 'x')
             else:
                 self.x += self.speed
-                updateNodes(self.speed, 'x')
+                self.updateNodes(self.speed, 'x')
         if difference_y > 0:
             if abs(difference_y) <= self.speed:
                 self.y -= difference_y
-                updateNodes(-difference_y, 'y')
+                self.updateNodes(-difference_y, 'y')
             else:
                 self.y -= self.speed
-                updateNodes(-self.speed, 'y')
+                self.updateNodes(-self.speed, 'y')
         elif difference_y < 0:
             if abs(difference_y) <= self.speed:
                 self.y -= difference_y
-                updateNodes(-self.difference_y, 'y')
+                self.updateNodes(-self.difference_y, 'y')
             else:
                 self.y += self.speed
-                updateNodes(self.speed, 'y')
+                self.updateNodes(self.speed, 'y')
         return True
     
     def Testupdate(self, screen_width):

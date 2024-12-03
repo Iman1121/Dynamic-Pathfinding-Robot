@@ -1,8 +1,9 @@
 import math
 import heapq
-from envLayout import player_color, screen_height, screen_width
+# from envLayout import player_color, screen_height, screen_width
 from pygame import draw
-import pygame
+
+player_color = (255, 0, 0)  # Red player
 
 def find_path(starting_nodes, goal):
     visited = set()
@@ -85,7 +86,7 @@ def visualizePath(path, screen):
             draw.line(screen, player_color, preNode.get_loc(), node.get_loc(), 2)
         preNode = node
 
-def check_collision(rect, obstacles):
+def check_collision(rect, obstacles, screen_height, screen_width):
     for obstacle in obstacles:
         if rect.colliderect(obstacle):
             return True

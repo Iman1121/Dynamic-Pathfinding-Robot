@@ -1,5 +1,6 @@
 import pygame
 from nodeClass import Node
+from agentClass import NPC
 
 screen_width = 800
 screen_height = 600
@@ -27,6 +28,39 @@ obstacle = pygame.Rect(block_x, block_y, block_width, block_height)
 obstacle2 = pygame.Rect(block_x, block_y + 155, block_width, block_height)
 obstacles = [obstacle, obstacle2]
 
+def getEnv(envNum):
+    if envNum == 1:
+        screen_width = 800
+        screen_height = 600
+        block_width = screen_width / 2
+        block_height = 100
+        block_x = screen_width / 4
+        block_y = agent_starting_y - block_height - 50  # Position the block above the agent
+        obstacle = pygame.Rect(block_x, block_y, block_width, block_height)
+        obstacle2 = pygame.Rect(block_x, block_y + 155, block_width, block_height)
+        obstacles = [obstacle, obstacle2]
+
+        return screen_height, screen_width, obstacles, []
+
+    if envNum == 2:
+        screen_width = 800
+        screen_height = 600
+        block_width = screen_width / 2
+        block_height = 100
+        block_x = screen_width / 4
+        block_y = agent_starting_y - block_height - 50  # Position the block above the agent
+        obstacle = pygame.Rect(block_x, block_y, block_width, block_height)
+        obstacle2 = pygame.Rect(block_x, block_y + 155, block_width, block_height)
+        obstacles = [obstacle, obstacle2]
+
+        agent_size = 100
+        agent_x = 0  # Start at the left edge
+        agent_y = 350
+        agent_speed = 3  # Speed of the agent
+        agent_obj = pygame.Rect(agent_x, agent_y, agent_size, agent_size)
+        agent = NPC(agent_x, agent_y, agent_speed, agent_size, agent_obj, agent_color)
+
+        return screen_height, screen_width, obstacles, [agent]
 
 def getNodes(obstacles, goal):
     nodes = []

@@ -5,7 +5,7 @@ from nodeClass import Node, detection_range
 from helpers import *
 from agentClass import Agent, NPC
 
-obstacles = envLayout.obstacles
+screen_height, screen_width, obstacles, moving_agents = envLayout.getEnv(7, 6)
 
 # Initialize pygame
 pygame.init()
@@ -18,26 +18,18 @@ pygame.display.set_caption("Player with Transparent Circle")
 player_size = 25
 player_x = 400
 player_y = 50
-player_speed = 8
+player_speed = 10
 player = pygame.Rect(player_x, player_y, player_size, player_size)
 
 # A.I. settings
 walker_size = 25
-walker_x = screen_width // 2 - player_size // 2
+# walker_x = screen_width // 2 - player_size // 2
+walker_x = player_size + 10
 walker_y = screen_height - player_size - 10  # Place the player at the bottom
-walker_speed = 4
+walker_speed = 6
 walker_obj = pygame.Rect(walker_x, walker_y, walker_size, walker_size)
 walker = Agent(walker_x, walker_y, walker_speed, walker_size, walker_obj, envLayout.walker_colour)
 
-# Agent settings
-agent_size = 100
-agent_x = 0  # Start at the left edge
-agent_y = 350
-agent_speed = 3  # Speed of the agent
-agent_obj = pygame.Rect(agent_x, agent_y, agent_size, agent_size)
-agent = NPC(agent_x, agent_y, agent_speed, agent_size, agent_obj, envLayout.agent_color)
-
-# Create a surface for the transparent circle
 circle_surface = pygame.Surface((detection_range * 2, detection_range * 2), pygame.SRCALPHA)
 ai_detect = pygame.Surface((detection_range * 2, detection_range * 2), pygame.SRCALPHA)
 pygame.draw.circle(circle_surface, envLayout.circle_color, (detection_range, detection_range), detection_range)
@@ -46,13 +38,14 @@ pygame.draw.circle(ai_detect, envLayout.circle_color, (detection_range, detectio
 # Define the goal node (if needed)
 goal = Node(400, 50)
 nodes = envLayout.getNodes(obstacles, goal)
-agent.nodes = envLayout.getNodes([agent.get_obj()], goal)
 
-for node in agent.nodes:
-    nodes.append(node)
+for agent in moving_agents:
+    agent.nodes = envLayout.getNodes([agent.get_obj()], goal)
+    for node in agent.nodes:
+        nodes.append(node)
+    obstacles.append(agent.get_obj())
 
 path = []
-obstacles.append(agent.get_obj())
 setAdjacencies(nodes, obstacles, screen)
 
 
@@ -120,7 +113,7 @@ while running:
     
     # Update the player's rectangle position
     newPlayer = pygame.Rect(newx, newy, player_size, player_size)
-    if not check_collision(newPlayer, obstacles):
+    if not check_collision(newPlayer, obstacles, screen_height, screen_width):
         player_y = newy
         player_x = newx
         player.update(player_x, player_y, player_size, player_size)
@@ -131,11 +124,13 @@ while running:
     goal.x = player_x + player_size // 2
     goal.y = player_y + player_size // 2
 
-    agent.Testupdate(screen_width)
+    for agent in moving_agents:
+        agent.Testupdate(screen_width)
+        agent.get_obj().update(agent.x, agent.y, agent.size, agent.size)
+
 
     # Update A.I. position
     walker.get_obj().update(walker.x, walker.y, walker.size, walker.size)
-    agent.get_obj().update(agent.x, agent.y, agent.size, agent.size)
 
 
     # Check each node for detection
@@ -161,7 +156,8 @@ while running:
     pygame.draw.rect(screen, envLayout.walker_colour, walker.get_obj())
 
     # Draw the moving agent
-    pygame.draw.rect(screen, envLayout.agent_color, agent.get_obj())
+    for agent in moving_agents:
+        pygame.draw.rect(screen, envLayout.agent_color, agent.get_obj())
 
     # Draw the transparent circle around the player
     ai_position = (walker.x + walker.size // 2 - detection_range, walker.y + walker.size // 2 - detection_range)
@@ -185,7 +181,7 @@ while running:
     pygame.display.flip()
 
     # Frame rate
-    pygame.time.Clock().tick(30)
+    pygame.time.Clock().tick(24)
 
 # Quit pygame
 pygame.quit()

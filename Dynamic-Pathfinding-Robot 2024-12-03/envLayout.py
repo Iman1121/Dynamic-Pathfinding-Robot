@@ -59,7 +59,7 @@ def getEnv(envNum, numobjects = 0):
 
         return screen_height, screen_width, obstacles, moving_agents
     
-    if envNum == 5:
+    if envNum == 3:
         # Complex environment with obstacles scattered across a larger area
         screen_width = 1200
         screen_height = 800
@@ -73,7 +73,7 @@ def getEnv(envNum, numobjects = 0):
         ]
         moving_agents = []
         return screen_height, screen_width, obstacles, moving_agents
-    if envNum == 6:
+    if envNum == 4:
         # Complex environment with obstacles scattered across a larger area
         screen_width = 800
         screen_height = 600
@@ -86,7 +86,7 @@ def getEnv(envNum, numobjects = 0):
         moving_agents.append(NPC(0, 350, 7, 75, agent_color))
         return screen_height, screen_width, obstacles, moving_agents
     
-    if envNum == 7:
+    if envNum == 5:
         # Random environment with 5 obstacles maintaining at least 75px space
         screen_width = 800
         screen_height = 600

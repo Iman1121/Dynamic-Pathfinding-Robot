@@ -5,7 +5,7 @@ from nodeClass import Node, detection_range
 from helpers import *
 from agentClass import Agent, NPC
 
-screen_height, screen_width, obstacles, moving_agents = envLayout.getEnv(7, 6)
+screen_height, screen_width, obstacles, moving_agents = envLayout.getEnv(5, 6)
 
 # Initialize pygame
 pygame.init()

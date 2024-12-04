@@ -95,6 +95,10 @@ def getEnv(envNum, numobjects = 0):
         block_height = 50
 
         obstacles = []
+        player_rect = pygame.Rect(400, 50, 25, 25)
+        agent_rect = pygame.Rect(35, 565, 25, 25)
+        obstacles.append(player_rect)
+        obstacles.append(agent_rect)
         for _ in range(numobjects):
             while True:
                 x = random.randint(0, screen_width - block_width)
@@ -116,7 +120,7 @@ def getEnv(envNum, numobjects = 0):
         # agent_y = random.randint(0, screen_height - agent_size)
         # agent_obj = pygame.Rect(agent_x, agent_y, agent_size, agent_size)
         moving_agents = []
-        return screen_height, screen_width, obstacles, moving_agents
+        return screen_height, screen_width, obstacles[2:], moving_agents
 
 def getNodes(obstacles, goal):
     nodes = []

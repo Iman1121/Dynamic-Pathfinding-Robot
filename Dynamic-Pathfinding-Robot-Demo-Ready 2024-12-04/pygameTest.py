@@ -6,7 +6,7 @@ from nodeClass import Node, detection_range
 from helpers import *
 from agentClass import Agent, NPC
 
-screen_height, screen_width, obstacles, moving_agents = envLayout.getEnv(2, 7)
+screen_height, screen_width, obstacles, moving_agents = envLayout.getEnv(4, 7)
 
 # Initialize pygame
 pygame.init()
@@ -103,8 +103,9 @@ while running:
             path = checkPath
         elif totalDistance(checkPath) < totalDistance(path) and (checkPath[1] != path[1]):
             path = checkPath 
-        elif not walker.traverse(path[-1], 5):
-            path.pop()
+        if path != []:
+            if not walker.traverse(path[-1], 5):
+                path.pop()
 
         # pygame.draw.line(screen, (255,255,255), (walker.x, walker.y), (path[-1].x, path[-1].y), 25)
     else:
